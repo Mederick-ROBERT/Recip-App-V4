@@ -4,14 +4,16 @@
 
 <template>
     <div>
-        <h1>Index</h1>
+        <h1>Menu</h1>
     </div>
 </template>
 
 <script>
 
 export default {
-    
+    mounted() {
+
+    }
 }
 </script>
 
