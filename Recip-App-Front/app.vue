@@ -17,4 +17,15 @@ import Header from '~/components/Header/Header.vue'
   font-family: v.$text;
 }
 
+::-webkit-scrollbar {
+  background-color: transparent;
+  width: 3px;
+  height: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: v.$primary--color;
+  border-radius: 0.5rem;
+}
+
 </style>
