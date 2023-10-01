@@ -1,7 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import SearchSlider from '~/components/Slider/SearchSlider.vue';
+import CardPlat from '@/components/Card/CardPlat.vue';
 
 const range = ref(50);
+
+const numberPlat = ref(15)
 
 </script>
 
@@ -96,13 +100,34 @@ const range = ref(50);
             </form>
         </div>
         <div class="recherche--container--plat">
-            
+            <div class="plat--slider">
+                <div class="plat--search">
+                    <form>
+                        <input type="text" name="plat" id="plat" class="input--search--plat" > <Icon name="ph:magnifying-glass" style="color: #DD5D2C; width: 30px; height: 30px;" />
+                    </form>
+                </div>
+                <div class="plat--slider">
+                    <h2>Les Tendances De La Semaine</h2>
+                    <div class="plat--slider--slider">
+                        <SearchSlider />
+                    </div> 
+                </div>
+            </div>
+            <hr>
+            <div class="plat--all">
+                <h2>Tous les Plats </h2>
+                <div class="plat--all--cards">
+                    <CardPlat img="https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" :name="name" :timer="timer" v-for="n in numberPlat"/>
+                </div>
+                <div class="voir-plus">
+                    <button ref="button" @click="numberPlat < 50 ? numberPlat += 10 : $refs.button.style.display='none'">Voir plus</button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-
 export default {
     mounted() {
         const inputOpen = document.querySelectorAll('.input--title');
@@ -177,6 +202,12 @@ export default {
         
        
     },
+    data() {
+        return {
+            name: 'Plat de test',
+            timer: '30',
+        }
+    },
 }
 </script>
 
@@ -193,6 +224,7 @@ export default {
         height: calc(100vh - v.$head--height);
         display: flex;
         align-items: center;
+        animation: filterIn 1s ease;
 
         & .filtre--container {
             width: 90%;
@@ -370,10 +402,85 @@ export default {
 
     &--plat {
         flex: 3.5;
-        background-color: blue;
         height: calc(100vh - v.$head--height);
         overflow-y: scroll;
         overflow-x: hidden;
+
+        & .plat--search {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 999;
+
+            & .input--search--plat {
+                border: none;
+                background: #F6F6F6; 
+                box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.05) inset; 
+                border-radius: 14px;
+                padding: .3rem .8rem;
+                color: black;
+                width: 15vw;
+
+                &:focus {
+                    outline-color: v.$primary--color;
+                }
+            }
+        }
+
+        & .plat--slider {
+            width: 100%;
+            height: 30vh;
+            position: relative;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+
+            & h2 {
+                font-size: 24px;
+                font-weight: 400;
+                word-wrap: break-word;
+                text-transform: capitalize;
+                border-bottom: 2px solid v.$primary--color;
+                width: fit-content;
+            }
+
+            &--slider {
+                height: 80%;
+                animation: enterInBottom 1s ease-in-out;
+            }
+        }
+
+        & hr {
+            width: 85%;
+            margin: 1rem auto;
+            border: 1px solid v.$trait--color;
+        }
+
+        & .plat--all {
+            width: 100%;
+            height: auto;
+
+            & h2 {
+                font-size: 24px;
+                font-weight: 400;
+                word-wrap: break-word;
+                text-transform: capitalize;
+                margin-bottom: 1rem;
+                border-bottom: 2px solid v.$primary--color;
+                width: fit-content;
+            }
+
+            &--cards {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 2rem;
+                animation: enterInBottom 1.5s ease-in-out;
+            }
+        }
     }
 }
 
@@ -486,4 +593,44 @@ input[type=range]:focus::-ms-fill-lower {
 input[type=range]:focus::-ms-fill-upper {
   background: #000000;
 }
+
+.voir-plus {
+    width: 100%;
+    text-align: center;
+}
+
+.voir-plus button {
+   width: 200px;
+    margin: 1.5rem auto;
+    background-color: v.$primary--color; 
+    color: white;
+    padding: .5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+@keyframes filterIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes enterInBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(30%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 </style>

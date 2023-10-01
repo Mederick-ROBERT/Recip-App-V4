@@ -10,10 +10,10 @@ import Plat4 from '~/assets/Img/plat4.jpg'
 const options = {
       rewind: true,
       gap   : '1rem',
-      perPage: 3,
+      perPage: 4,
       arrows: false,
       type: 'loop',
-      height: '200px',
+      height: '150px',
       padding: { top: '1rem', bottom: '1rem', right: '3rem', left: 0 },
       autoplay: true,
     };
@@ -69,14 +69,14 @@ export default defineComponent( {
   flex-direction: column;
   position: relative;
   padding: 0;
-  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.15 );
 }
 
 .picture--slide {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 1rem;
+  border-radius: .5rem;
 }
 
 p {

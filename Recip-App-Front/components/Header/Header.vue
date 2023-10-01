@@ -135,6 +135,7 @@ header {
             position: absolute;
             bottom: -1rem;
             right: .5rem;
+            z-index: 99999;
 
             .connexion--button {
                 display: flex;
@@ -146,6 +147,7 @@ header {
                 justify-content: space-evenly;
                 gap: 1rem;
                 padding: .2rem 1.5rem;
+                box-shadow: 0px 8px 15px -3px rgba(0,0,0,0.3);
 
                 img {
                     height: 80%;
