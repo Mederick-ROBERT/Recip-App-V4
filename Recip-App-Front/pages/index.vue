@@ -67,7 +67,7 @@ export default {
                 object-fit: contain;
                 animation: slideIn 1.1s ease-in-out;
                 position: relative;
-                z-index: 9999;
+                z-index: 9;
             }
         }
     }
@@ -86,6 +86,7 @@ export default {
             align-items: start;
             justify-content: center;
             gap: 1rem;
+            z-index: 9999;
 
             span {
                 overflow-y: hidden;
@@ -141,7 +142,8 @@ export default {
 
         & .enter--slider {
             flex: 1;
-            
+            position: relative;
+            animation: sliderInBottom 1.5s ease-in-out;
         }
     }
 }
@@ -167,6 +169,18 @@ export default {
     100% {
         opacity: 1;
         bottom: 0%;
+    }
+}
+
+@keyframes sliderInBottom {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0%);
+        opacity: 1;
     }
 }
 </style>

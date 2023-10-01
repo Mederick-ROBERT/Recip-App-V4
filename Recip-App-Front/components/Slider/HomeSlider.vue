@@ -14,7 +14,7 @@ const options = {
       arrows: false,
       type: 'loop',
       height: '200px',
-      padding: { top: '1rem', bottom: '1rem', right: '3rem' },
+      padding: { top: '1rem', bottom: '1rem', right: '3rem', left: 0 },
       autoplay: true,
     };
 </script>
@@ -23,7 +23,7 @@ const options = {
     <Splide  :options="options" >
         <SplideSlide v-for="plat in plats" data-splide-interval="3000">
           <div class="splide_card">
-            <img class="picture--slide" :src="plat.img" alt="Sample 1">
+            <img class="picture--slide" :src="plat.img" alt="Sample 1" loading="lazy">
             <p>{{ plat.name }}</p>
           </div>
         </SplideSlide>
@@ -63,15 +63,13 @@ export default defineComponent( {
   background-repeat: no-repeat;
   border-radius: 5rem;
   padding: 1rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
   position: relative;
   padding: 0;
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
 }
 
 .picture--slide {
@@ -83,5 +81,16 @@ export default defineComponent( {
 
 p {
   position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: start;
+  padding: 1rem;
+  background: rgba(217, 217, 217, 0.68);
+  backdrop-filter: blur( 0.5px );
+  -webkit-backdrop-filter: blur( 0.5px );
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+  border-radius: 0 0 1rem 1rem;
+  font-size: 22px;
+  font-weight: 400;
 }
 </style>

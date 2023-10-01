@@ -28,7 +28,7 @@
             <div class="header--container--connexion">
                 <span class="connexion--button">
                     <img :src="User" alt="User Logo"/>
-                    <nuxt-link to="/connexion">Connexion</nuxt-link>
+                    <nuxt-link to="/">Connexion</nuxt-link>
                 </span>
             </div>
         </div>
