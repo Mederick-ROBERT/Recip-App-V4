@@ -1,14 +1,16 @@
 <template>
     <div class="card--plat">
-        <img :src="img" alt="image">
-        <span class="timer"><Icon name="ion:ios-timer" style="color: #DD5D2C; width: 25px; height: 25px;"/>{{ timer }} min</span>
-        <!-- <span class="favorite"><Icon name="streamline:interface-bookmark-double-bookmarks-double-tags-favorite" style="color: #DD5D2C; width: 25px; height: 25px;" /></span> -->
-        <p class="name">{{ name }}</p>
+        <NuxtLink :to="slug">
+            <img :src="img" alt="image">
+            <span class="timer"><Icon name="ion:ios-timer" style="color: #DD5D2C; width: 25px; height: 25px;"/>{{ timer }} min</span>
+            <!-- <span class="favorite"><Icon name="streamline:interface-bookmark-double-bookmarks-double-tags-favorite" style="color: #DD5D2C; width: 25px; height: 25px;" /></span> -->
+            <p class="name">{{ name }}</p>
+        </NuxtLink>
     </div>
 </template>
 
 <script>
-import Plat1 from '~/assets/Img/plat1.jpg'
+
 export default {
     name: 'CardPlat',
     props: {
@@ -24,14 +26,11 @@ export default {
             type: String,
             default: ''
         },
+        slug : {
+            type: String,
+            default: ''
+        },
     }, 
-    data() {
-        return {
-            picture :[
-                {img: Plat1},
-            ]
-        }
-    },  
 }
 </script>
 
@@ -43,6 +42,11 @@ export default {
     height: 30vh;
     position: relative;
     border-radius: 1rem;
+    transition: all .3s ease-in-out;
+
+    &:hover {
+        transform: scale(1.03);
+    }
 
     img {
         width: 100%;
@@ -90,6 +94,10 @@ export default {
         display: flex;
         align-items: end;
         padding: 1rem;
+
+        &:hover {
+            text-decoration: underline;
+        }
     }
 
 }

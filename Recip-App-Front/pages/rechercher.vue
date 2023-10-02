@@ -117,7 +117,7 @@ const numberPlat = ref(15)
             <div class="plat--all">
                 <h2>Tous les Plats </h2>
                 <div class="plat--all--cards">
-                    <CardPlat img="https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" :name="name" :timer="timer" v-for="n in numberPlat"/>
+                    <CardPlat img="https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" :name="name" :timer="timer" :slug="slug" v-for="n in numberPlat"/>
                 </div>
                 <div class="voir-plus">
                     <button ref="button" @click="numberPlat < 50 ? numberPlat += 10 : $refs.button.style.display='none'">Voir plus</button>
@@ -206,6 +206,7 @@ export default {
         return {
             name: 'Plat de test',
             timer: '30',
+            slug: 'plat-de-test',
         }
     },
 }
