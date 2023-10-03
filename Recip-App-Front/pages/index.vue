@@ -1,6 +1,7 @@
 <script setup>
     import HomePicture from '../assets/Img/home-picture.png'
     import HomeSlider from '~/components/Slider/HomeSlider.vue';
+
 </script>
 
 <template>

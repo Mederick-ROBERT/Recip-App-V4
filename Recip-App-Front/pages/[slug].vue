@@ -99,6 +99,7 @@ export default {
     position: fixed;
     top: calc(v.$head--height - .5rem);
     left: .2rem;
+    animation: arrowIn 1500ms ease-in-out forwards;
 }
 
 .recip--container {
@@ -347,6 +348,16 @@ export default {
     }
     100% {
         transform: translateY(0%);
+        opacity: 1;
+    }
+}
+
+@keyframes arrowIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
         opacity: 1;
     }
 }

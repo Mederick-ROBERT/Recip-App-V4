@@ -7,21 +7,37 @@ import Plat2 from '~/assets/Img/plat2.jpg'
 import Plat3 from '~/assets/Img/plat3.jpg'
 import Plat4 from '~/assets/Img/plat4.jpg'
 
+import { usePlatStore } from '~/store/plat'
+const store = usePlatStore()
+const data = await store.homeSlider()
+
+const plats = [
+    ...data.map((plat) => ({
+      name: plat.name,
+      img: plat.picture_url,
+    })),
+    { name: 'plat1', img: Plat1 },
+    { name: 'plat2', img: Plat2 },
+    { name: 'plat3', img: Plat3 },
+    { name: 'plat4', img: Plat4 },
+  ]
+
 const options = {
       rewind: true,
       gap   : '1rem',
       perPage: 3,
       arrows: false,
       type: 'loop',
-      height: '200px',
+      height: '220px',
       padding: { top: '1rem', bottom: '1rem', right: '3rem', left: 0 },
       autoplay: true,
+      perMove : 1,
     };
 </script>
 
 <template>
     <Splide  :options="options" >
-        <SplideSlide v-for="plat in plats" data-splide-interval="3000">
+        <SplideSlide v-for="plat in plats" data-splide-interval="2000">
           <div class="splide_card">
             <img class="picture--slide" :src="plat.img" alt="Sample 1" loading="lazy">
             <p>{{ plat.name }}</p>
@@ -39,18 +55,6 @@ export default defineComponent( {
     Splide,
     SplideSlide,
   },
-
-  data() {
-    return {
-        plats : [
-            {name: 'plat1', img: Plat1},
-            {name: 'plat2', img: Plat2},
-            {name: 'plat3', img: Plat3},
-            {name: 'plat4', img: Plat4},
-        ]
-    }
-  },
-
 } );
 </script>
 

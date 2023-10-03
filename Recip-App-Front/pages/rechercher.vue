@@ -3,6 +3,21 @@ import { ref, onMounted } from 'vue';
 import SearchSlider from '~/components/Slider/SearchSlider.vue';
 import CardPlat from '@/components/Card/CardPlat.vue';
 
+import { usePlatStore } from '~/store/plat'
+const store = usePlatStore()
+const data = await store.fetchData()
+
+const plats = [
+    ...data.map((plat) => ({
+      name: plat.name,
+      img: plat.picture_url,
+      timer: plat.preparation_time,
+      slug: plat.slug,
+    })),
+  ]
+
+console.log(plats)
+
 const range = ref(50);
 
 const numberPlat = ref(15)
@@ -117,7 +132,7 @@ const numberPlat = ref(15)
             <div class="plat--all">
                 <h2>Tous les Plats </h2>
                 <div class="plat--all--cards">
-                    <CardPlat img="https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" :name="name" :timer="timer" :slug="slug" v-for="n in numberPlat"/>
+                    <CardPlat :img="plat.img" :name="plat.name" :timer="plat.timer" :slug="plat.slug" v-for="plat in plats"/>
                 </div>
                 <div class="voir-plus">
                     <button ref="button" @click="numberPlat < 50 ? numberPlat += 10 : $refs.button.style.display='none'">Voir plus</button>

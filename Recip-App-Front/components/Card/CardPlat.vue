@@ -65,12 +65,12 @@ export default {
         top: 0;
         left: 0;
         padding: 0.5rem;
-        background: linear-gradient(155deg, rgba(0,0,0,0.9136904761904762) 0%, rgba(0,0,0,0) 50%);
+        background: linear-gradient(160deg, rgba(0,0,0,0.9136904761904762) 0%, rgba(0,0,0,0) 50%);
         border-radius: 1rem 0 .5rem 0;
         color: white;
         font-size: 1.2rem;
         font-weight: 600;
-        width: 50%;
+        width: 80%;
         height: 50%;
         display: flex;
         gap: .3rem;

@@ -1,11 +1,14 @@
 <script setup>
 import Header from '~/components/Header/Header.vue'
+import ApiLoad from '~/middleware/ApiLoad.vue'
+
 </script>
 
 <template>
   <div v-if="loading" class="loading-page">
     <span id="loader" class="loader"></span>
   </div>
+  <!-- <ApiLoad v-if="!loading" /> -->
   <Header v-if="!loading" />
   <NuxtPage v-if="!loading" />
 </template>
@@ -19,7 +22,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log('mounted');
       setTimeout(() => {
         this.loading = false;
         const loader = document.querySelector('#loader');
@@ -27,6 +29,9 @@ export default {
       }, 500);
     });
   },
+  setup() {
+
+  }
 };
 </script>
 
