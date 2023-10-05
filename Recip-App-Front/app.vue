@@ -2,6 +2,13 @@
 import Header from '~/components/Header/Header.vue'
 import ApiLoad from '~/middleware/ApiLoad.vue'
 
+useSeoMeta({
+  title: 'Food\'X',
+  ogTitle: 'Food\'X',
+  description: 'This is my amazing site, let me tell you all about it.',
+  ogDescription: 'This is my amazing site, let me tell you all about it.',
+})
+
 </script>
 
 <template>

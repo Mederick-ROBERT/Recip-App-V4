@@ -1,7 +1,9 @@
+
+
 <template>
     <div class="card--plat">
         <NuxtLink :to="slug">
-            <img :src="img" alt="image">
+            <img :src="img" alt="image" loading="lazy">
             <span class="timer"><Icon name="ion:ios-timer" style="color: #DD5D2C; width: 25px; height: 25px;"/>{{ timer }} min</span>
             <!-- <span class="favorite"><Icon name="streamline:interface-bookmark-double-bookmarks-double-tags-favorite" style="color: #DD5D2C; width: 25px; height: 25px;" /></span> -->
             <p class="name">{{ name }}</p>

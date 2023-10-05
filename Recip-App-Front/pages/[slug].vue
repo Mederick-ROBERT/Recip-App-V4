@@ -1,33 +1,51 @@
 <script setup>
     import Plat1 from '@/assets/Img/plat1.jpg'
     import IngredientSlider from '@/components/Slider/IngredientSlider.vue'
+
+    import { useOncePlatStore } from '@/store/plat'
+
+    const router = useRoute()
+    const params = router.params.slug
+
+    const store = useOncePlatStore();
+    const result = await store.getOncePlat(params)
+    const { plat, ingredient, etapes } = result.value
+    // console.log('PLAT', plat)
+    // console.log('INGREDIENT', ingredient)
+    // console.log('ETAPES', etapes)
+    // console.log('Result',result.value.plat)
+
+    const numberPerson = ref(plat.person_number)
+
+    function addPerson() {
+        numberPerson.value++
+    }
+
+    function removePerson() {
+        if (numberPerson.value > 0){
+            numberPerson.value--
+        }
+    }
+
 </script>
 
 <template>
 <span class="return"><NuxtLink to="/rechercher"><Icon name="material-symbols:arrow-left-alt-rounded" style="color: #DD5D2C; width: 30px; height: 30px;" /></NuxtLink></span>
     <div class="recip--container">
         <div class="recip--left">
-            <h1>{{ recip.name }}</h1>
+            <h1>{{ plat.name }}</h1>
             <div class="ingredients">
                 <h2><Icon name="fa6-solid:basket-shopping" style="color: #DD5D2C; width: 30px; height: 30px;" /> Ingredients</h2>
                 <div class="slider">
-                    <IngredientSlider />
+                    <IngredientSlider :ingredients="ingredient" :number-personn="numberPerson" :initialPersonn="plat.person_number" />
                 </div>
             </div>
             <div class="preparation">
                 <h2><Icon name="streamline:food-kitchenware-chef-toque-hat-cook-gear-chef-cooking-nutrition-tools-clothes-hat-clothing-food" style="color: #DD5D2C; width: 30px; height: 30px;"/>Préparation</h2>
                 <div class="etapes--all">
-                    <div class="etape">
-                        <h3>Étape 1</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi aliquid at velit eius assumenda tempora neque. Repellat quis vero distinctio. In, amet assumenda? Corporis perspiciatis numquam optio ab sit maiores?</p>
-                    </div>
-                    <div class="etape">
-                        <h3>Étape 2</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi aliquid at velit eius assumenda tempora neque. Repellat quis vero distinctio. In, amet assumenda? Corporis perspiciatis numquam optio ab sit maiores?</p>
-                    </div>
-                    <div class="etape">
-                        <h3>Étape 3</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi aliquid at velit eius assumenda tempora neque. Repellat quis vero distinctio. In, amet assumenda? Corporis perspiciatis numquam optio ab sit maiores?</p>
+                    <div class="etape" v-for="etape in etapes">
+                        <h3>Étape {{ etape.order }}</h3>
+                        <p>{{ etape.content }}</p>
                     </div>
                 </div>
             </div>
@@ -57,38 +75,32 @@
                 <div class="number--person">
                     <Icon name="tabler:users" style="color: black; width: 30px; height: 30px;" />
                     <div class="number--person--block">
-                        <span class="plus"><Icon name="ic:round-add" style="color: #DD5D2C; width: 25px; height: 25px;"/></span>
-                        <span class="number">{{ recip.person }}</span>
-                        <span class="minus"><Icon name="gg:math-minus" style="color: #DD5D2C; width: 25px; height: 25px;"/></span>
+                        <span class="plus" @click="removePerson"><Icon name="gg:math-minus" style="color: #DD5D2C; width: 25px; height: 25px;"/></span>
+                        <span class="number">{{ numberPerson }}</span>
+                        <span class="minus" @click="addPerson"><Icon name="ic:round-add" style="color: #DD5D2C; width: 25px; height: 25px;"/></span>
                     </div>
                 </div>
                 <div class="preparation--time">
-                    <span class="timer"><Icon name="ion:ios-timer" style="color: black; width: 30px; height: 30px;"/> {{ recip.timer }} min</span>
-                    <span class="cooking"><Icon name="fe:kitchen-cooker" style="color: black; width: 30px; height: 30px;" /> {{ recip.cooking }} min</span>
+                    <span class="timer"><Icon name="ion:ios-timer" style="color: black; width: 30px; height: 30px;"/> {{ plat.preparation_time }} min</span>
+                    <span class="cooking"><Icon name="fe:kitchen-cooker" style="color: black; width: 30px; height: 30px;" /> {{ plat.cooking_time }} min</span>
                 </div>
             </div>
             <div class="recip--right--picture">
-                <img :src="recip.img" alt="image">
+                <img :src="plat.picture_url" alt="image" loading="lazy">
             </div>
         </div>
     </div>
 </template>
 
 <script>
-
 export default {
     data() {
         return {
-            recip: {
-                name: 'Tarte Avocat Mozarella',
-                img: Plat1,
-                timer: '30',
-                cooking: '15',
-                person: '4',
-            }
-        }
-    }
+        numberPerson: 0,
+        };
+    },
 }
+
 </script>
 
 <style lang='scss' scoped>
@@ -329,6 +341,7 @@ export default {
 
         &--picture {
             flex: 2;
+            max-height: 70%;
 
             & img {
                 width: 100%;

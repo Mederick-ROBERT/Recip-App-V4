@@ -28,7 +28,7 @@ const options = {
       perPage: 3,
       arrows: false,
       type: 'loop',
-      height: '220px',
+      height: '200px',
       padding: { top: '1rem', bottom: '1rem', right: '3rem', left: 0 },
       autoplay: true,
       perMove : 1,

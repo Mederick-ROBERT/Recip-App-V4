@@ -4,23 +4,61 @@ import SearchSlider from '~/components/Slider/SearchSlider.vue';
 import CardPlat from '@/components/Card/CardPlat.vue';
 
 import { usePlatStore } from '~/store/plat'
+
 const store = usePlatStore()
 const data = await store.fetchData()
 
-const plats = [
-    ...data.map((plat) => ({
-      name: plat.name,
-      img: plat.picture_url,
-      timer: plat.preparation_time,
-      slug: plat.slug,
-    })),
-  ]
+const platAll = ref(null)
+const plats = ref([]);
 
-console.log(plats)
+
+onMounted(() => {
+    platAll.value = store.plat; 
+    updatePlats();
+
+    const filter = document.querySelector('.filtre--container');
+    const loaderFilter = document.querySelector('#loaderFilter');
+
+        filter.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            loaderFilter.classList.toggle('loaderFilter');
+
+            const formData = new FormData(filter);
+
+            const dataImportance = formData.getAll('importance[]');
+            const dataType = formData.get('type');
+            const dataPreparationTime = formData.get('preparation_time');
+            const dataIngredient = formData.getAll('ingredient[]');
+
+            const data = {
+                importance: dataImportance,
+                type: dataType,
+                preparation_time: dataPreparationTime,
+                ingredient: dataIngredient,
+            }
+
+            console.log(data);
+
+            const setData = await store.setDataFilter(data)
+            platAll.value = store.plat; 
+            updatePlats();
+            loaderFilter.classList.toggle('loaderFilter');
+
+        }) 
+});
+
+const updatePlats = () => {
+    plats.value = platAll.value.data.map((plat) => ({
+        name: plat.name,
+        img: plat.picture_url,
+        timer: plat.preparation_time,
+        slug: plat.slug,
+    }));
+};
 
 const range = ref(50);
 
-const numberPlat = ref(15)
+const numberPlat = ref(15);
 
 </script>
 
@@ -35,28 +73,28 @@ const numberPlat = ref(15)
                             <div class="content">
                                 <span class="label">Midi</span>
                                 <label class="checkBox">
-                                    <input id="ch1" type="checkbox" name="importance">
+                                    <input id="ch1" type="checkbox" name="importance[]" value="1">
                                     <div class="transition"></div>
                                 </label>
                             </div>
                             <div class="content">
                                 <span class="label">Soir</span>
                                 <label class="checkBox">
-                                    <input id="ch5" type="checkbox" name="importance">
+                                    <input id="ch5" type="checkbox" name="importance[]" value="2">
                                     <div class="transition"></div>
                                 </label>
                             </div>
                             <div class="content">
                                 <span class="label">Semaine</span>
                                 <label class="checkBox">
-                                    <input id="ch6" type="checkbox" name="importance">
+                                    <input id="ch6" type="checkbox" name="importance[]" value="3">
                                     <div class="transition"></div>
                                 </label>
                             </div>
                             <div class="content">
                                 <span class="label">Weekend</span>
                                 <label class="checkBox">
-                                    <input id="ch7" type="checkbox" name="importance">
+                                    <input id="ch7" type="checkbox" name="importance[]" value="4">
                                     <div class="transition"></div>
                                 </label>
                             </div>
@@ -68,21 +106,21 @@ const numberPlat = ref(15)
                             <div class="content">
                                 <span class="label">Entrée</span>
                                 <label class="checkBox">
-                                    <input id="ch1" type="radio" name="type">
+                                    <input id="ch1" type="radio" name="type" value="1">
                                     <div class="transition"></div>
                                 </label>
                             </div>
                             <div class="content">
                                 <span class="label">Plat</span>
                                 <label class="checkBox">
-                                    <input id="ch1" type="radio" name="type">
+                                    <input id="ch1" type="radio" name="type" value="2">
                                     <div class="transition"></div>
                                 </label>
                             </div>
                             <div class="content">
                                 <span class="label">Dessert</span>
                                 <label class="checkBox">
-                                    <input id="ch1" type="radio" name="type">
+                                    <input id="ch1" type="radio" name="type" value="3">
                                     <div class="transition"></div>
                                 </label>
                             </div>
@@ -91,7 +129,7 @@ const numberPlat = ref(15)
                     <div class="input--open">
                         <span class="input--title">Temp de Préparation <Icon name="material-symbols:arrow-back-ios-new-rounded" style="rotate: -90deg;" /></span>
                         <div class="input--open--check">
-                            <input type="hidden" name="preparation_time" :value="range">
+                            <input id="preparation_time_input" type="hidden" name="preparation_time" :value="range">
                             <p class="cursor--range" :style="{ transform: 'translateX(' + (range - 20) + '%)' }"><span>{{ range }} min</span></p>
                             <input type="range" min="10" max="120" step="10" class="istyle" id="preparationTime" v-model="range">
                         </div>
@@ -111,6 +149,7 @@ const numberPlat = ref(15)
                 <div class="filtre--container--button">
                     <button type="submit" class="input--button--submit">Rechercher</button>
                     <span class="input--button--reset">Réinitialiser</span>
+                    <span id="loaderFilter" ></span>
                 </div>
             </form>
         </div>
@@ -132,7 +171,7 @@ const numberPlat = ref(15)
             <div class="plat--all">
                 <h2>Tous les Plats </h2>
                 <div class="plat--all--cards">
-                    <CardPlat :img="plat.img" :name="plat.name" :timer="plat.timer" :slug="plat.slug" v-for="plat in plats"/>
+                    <CardPlat :img="plat.img" :name="plat.name" :timer="plat.timer" :slug="plat.slug" v-for="plat in plats" />
                 </div>
                 <div class="voir-plus">
                     <button ref="button" @click="numberPlat < 50 ? numberPlat += 10 : $refs.button.style.display='none'">Voir plus</button>
@@ -146,12 +185,17 @@ const numberPlat = ref(15)
 export default {
     mounted() {
         const inputOpen = document.querySelectorAll('.input--title');
+        const preparation_time_input = document.querySelector('#preparation_time_input');
 
         for (const input of inputOpen) {
             input.addEventListener('click', () => {
                 const caseInput = input.closest('.input--open').querySelector('.input--open--check');
                 caseInput.classList.toggle('openInput');
             })
+        }
+
+        if(!preparation_time_input.closest('.input--open--check').classList.contains('openInput')) {
+            preparation_time_input.value = null;
         }
 
         const search = document.querySelector('.input--search');
@@ -213,16 +257,7 @@ export default {
                 })
             }
         })
-
-        
        
-    },
-    data() {
-        return {
-            name: 'Plat de test',
-            timer: '30',
-            slug: 'plat-de-test',
-        }
     },
 }
 </script>
@@ -285,6 +320,10 @@ export default {
                         display: none;
                         flex-direction: column;
                         gap: .5rem;
+
+                        input {
+                            display: none;
+                        }
 
                         .content {
                             display: flex;
@@ -384,6 +423,7 @@ export default {
                 flex-direction: column;
                 align-items: center;
                 justify-content: space-evenly;
+                position: relative;
 
                 & .input--button--submit {
                     background-color: v.$primary--color;
@@ -495,6 +535,7 @@ export default {
                 justify-content: center;
                 gap: 2rem;
                 animation: enterInBottom 1.5s ease-in-out;
+
             }
         }
     }
@@ -502,6 +543,11 @@ export default {
 
 .openInput {
     display: flex !important;
+
+    input {
+        display: block !important;
+        
+    }
 }
 
 .cursor--range {
@@ -627,6 +673,44 @@ input[type=range]:focus::-ms-fill-upper {
     cursor: pointer;
 }
 
+// Loader
+
+.loaderFilter {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  border-top: 4px solid #c4c4c4;
+  border-right: 4px solid transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.loaderFilter::after {
+  content: '';  
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border-bottom: 4px solid #FF3D00;
+  border-left: 4px solid transparent;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+    
+
+// Animation
 @keyframes filterIn {
     0% {
         opacity: 0;

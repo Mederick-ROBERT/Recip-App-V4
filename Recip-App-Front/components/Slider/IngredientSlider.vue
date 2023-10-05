@@ -1,10 +1,20 @@
 <script setup>
 import VueSplide from '@splidejs/vue-splide';
 import '@splidejs/vue-splide/css';
+import { defineProps } from 'vue';
 
-import Avocat from '~/assets/Img/avocat.png'
-import Moza from '~/assets/Img/moza.jpg'
-import Butter from '~/assets/Img/Butter.jpg'
+import Avocat from '~/assets/Img/avocat.png';
+import Moza from '~/assets/Img/moza.jpg';
+import Butter from '~/assets/Img/Butter.jpg';
+
+const props = defineProps([
+  'ingredients',
+  'numberPersonn',
+  'initialPersonn'
+])
+
+const ingredients = props.ingredients;
+console.log(...ingredients)
 
 const options = {
       rewind: true,
@@ -19,10 +29,11 @@ const options = {
 
 <template>
     <Splide  :options="options" >
-        <SplideSlide v-for="plat in plats" data-splide-interval="3000">
+        <SplideSlide v-for="ingredient in ingredients" data-splide-interval="3000">
+          <p>{{ props.numberPersonn }}</p>
           <div class="splide_card">
-            <img class="picture--slide" :src="plat.img" alt="Sample 1" loading="lazy">
-            <p>{{ plat.name }}:&nbsp;<span>{{ plat.prop }}</span></p>
+            <img class="picture--slide" :src="ingredient.ingredient.picture_url" alt="Sample 1" loading="lazy">
+            <p>{{ ingredient.ingredient.name }}:&nbsp;<span>{{ (ingredient.quantity / initialPersonn * numberPersonn).toFixed(0) }} {{ ingredient.ingredient.unité_id }}</span></p>
           </div>
         </SplideSlide>
   </Splide>

@@ -23,30 +23,57 @@ export const usePlatStore = defineStore('plat', () => {
     //     },
     // }
 
-    const plat = useFetch('http://localhost:8000/api/plat');
+    const plat = ref(null);
 
     const fetchData = async () => {
-        const data = await plat
-        console.log('STORE', plat.data.value)
-        return plat.data.value
+        const data = await useFetch('http://localhost:8000/api/plat')
+        plat.value = data;
+
+        return plat.value.data
     }
 
     const homeSlider = async () => {
-        const data = await plat
+        const homeData = await useFetch('http://localhost:8000/api/plat')
         
         const array = []
         for (let i = 0; i < 5; i++) {
-            array.push(plat.data.value[i])
+            array.push(homeData.data.value[i])
         }
-        console.log('STORE2', array)
         return array
+    }
+
+    const setDataFilter = async(data) => {
+        console.log('RETURN DATA PLAT',plat)
+        const setData = await useFetch('http://localhost:8000/api/filter', {
+            body: data,
+            method: 'POST'
+        })
+        plat.value = setData;
+        console.log('RETURN DATA PLAT AFTER',plat)
+        console.log('RETURN DATA',setData)
     }
 
     return {
         plat,
         fetchData,
-        homeSlider
+        homeSlider,
+        setDataFilter
     }
 })
 
 // await useFetch('http://localhost:8000/api/plat')
+
+export const useOncePlatStore = defineStore('oncePlat', () => {
+
+    const oncePlat = null;
+
+    const getOncePlat = async (slug) => {
+        const data = await useFetch(`http://localhost:8000/api/plat/${slug}`)
+        return data.data
+    }
+
+    return {
+        oncePlat,
+        getOncePlat
+    }
+})
