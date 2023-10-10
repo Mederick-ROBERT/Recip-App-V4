@@ -17,3 +17,19 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::controller(\App\Http\Controllers\PlatController::class)
+    ->group(function() {
+
+        Route::get('/plat', 'index');
+        Route::get('/plat/{slug}', 'show');
+        Route::post('/filter', 'filter');
+
+});
+
+Route::controller(\App\Http\Controllers\IngredientController::class)
+    ->group(function() {
+
+        Route::get('/ingredients', 'index');
+
+});

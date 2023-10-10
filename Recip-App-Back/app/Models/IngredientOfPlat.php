@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class IngredientOfPlat extends Model
 {
     use HasFactory;
+
+    public function ingredient() {
+        return $this->belongsTo(Ingredient::class);
+    }
+
+    public function plats() {
+        return $this->belongsTo(Plat::class, 'plat_id');
+    }
 }

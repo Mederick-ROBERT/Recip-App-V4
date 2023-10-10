@@ -18,6 +18,7 @@ return new class extends Migration
                 ->constrained()
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
+            $table->mediumText('picture_url')->nullable();
             $table->timestamps();
         });
     }
