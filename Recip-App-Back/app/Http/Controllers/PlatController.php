@@ -148,8 +148,33 @@ class PlatController extends Controller
 
         // filtre d'ingrédient
         if ($request->ingredient != null && $plats != null) {
+            $ingredientNumber = [];
 
-            dd($plats);
+            foreach ($request->ingredient as $item) {
+                $ingredientMatches = Ingredient::where('name', 'LIKE', "$item%")->pluck('id');
+                foreach ($ingredientMatches as $number) {
+                    array_push($ingredientNumber, $number);
+                }
+            }
+
+//dump($ingredientNumber);
+            foreach ($plats as $plat) {
+                $ingredientIdArray = [];
+                $ingredientOf = IngredientOfPlat::where('plat_id', $plat->id)->get();
+
+                foreach ($ingredientOf as $ingredient) {
+                    array_push($ingredientIdArray, $ingredient->ingredient_id);
+                }
+//                dump($ingredientIdArray);
+                $diff = array_diff($ingredientNumber, $ingredientIdArray);
+                if(!empty($diff)) {
+//                    dump(array_diff($ingredientNumber, $ingredientIdArray));
+//                    dump('ils ne sont pas tous la');
+//                    dump($plat->id);
+                    $plats = $plats->where('id', '!=',$plat->id);
+                }
+            }
+
         } elseif ($request->ingredient != null && $plats == null) {
             $plats = collect();
             $ingredientNumber = [];
