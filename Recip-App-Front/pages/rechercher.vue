@@ -4,13 +4,18 @@ import SearchSlider from '~/components/Slider/SearchSlider.vue';
 import CardPlat from '@/components/Card/CardPlat.vue';
 
 import { usePlatStore } from '~/store/plat'
+import { useIngredientStore } from '~/store/ingredient'
 
 const store = usePlatStore()
-const data = await store.fetchData()
+if(store.plat == null) {
+    const data = await store.fetchData()
+}
 
 const platAll = ref(null)
 const plats = ref([]);
 
+const ingredients = useIngredientStore()
+const allIngredients = await ingredients.getIngredients()
 
 onMounted(() => {
     platAll.value = store.plat; 
@@ -56,9 +61,11 @@ const updatePlats = () => {
     }));
 };
 
-const range = ref(50);
+const range = ref(null);
 
 const numberPlat = ref(15);
+
+const searchIngredient = ref('');
 
 </script>
 
@@ -130,7 +137,7 @@ const numberPlat = ref(15);
                         <span class="input--title">Temp de Préparation <Icon name="material-symbols:arrow-back-ios-new-rounded" style="rotate: -90deg;" /></span>
                         <div class="input--open--check">
                             <input id="preparation_time_input" type="hidden" name="preparation_time" :value="range">
-                            <p class="cursor--range" :style="{ transform: 'translateX(' + (range - 20) + '%)' }"><span>{{ range }} min</span></p>
+                            <p class="cursor--range" :style="{ transform: 'translateX(' + (range - 20) + '%)', display: range == null ? 'none' : '' }"><span>{{ range }} min</span></p>
                             <input type="range" min="10" max="120" step="10" class="istyle" id="preparationTime" v-model="range">
                         </div>
                     </div>
@@ -138,11 +145,15 @@ const numberPlat = ref(15);
                         <span class="input--title">Ingrédients <Icon name="material-symbols:arrow-back-ios-new-rounded" style="rotate: -90deg;" /></span>
                         <div class="input--open--check">
                             <form class="input--search">
-                                <input type="search" name="ingredient" id="ingre"> <Icon name="ph:magnifying-glass" />
+                                <input type="text" list="ingredients" name="ingredient" id="ingre" autocomplete="off" v-model="searchIngredient"> <Icon name="ph:magnifying-glass" />
+                                <datalist id="ingredients">
+                                    <option v-if="searchIngredient.length >=2" v-for="ingredient in allIngredients" :value="ingredient.name">{{ ingredient.name }}</option>
+                                </datalist>
                             </form>
                             <div class="ingredient--search">
                                 
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -185,17 +196,12 @@ const numberPlat = ref(15);
 export default {
     mounted() {
         const inputOpen = document.querySelectorAll('.input--title');
-        const preparation_time_input = document.querySelector('#preparation_time_input');
 
         for (const input of inputOpen) {
             input.addEventListener('click', () => {
                 const caseInput = input.closest('.input--open').querySelector('.input--open--check');
                 caseInput.classList.toggle('openInput');
             })
-        }
-
-        if(!preparation_time_input.closest('.input--open--check').classList.contains('openInput')) {
-            preparation_time_input.value = null;
         }
 
         const search = document.querySelector('.input--search');
@@ -390,6 +396,7 @@ export default {
                                 border: none;
                                 outline: none;
                                 width: 90%;
+                                
                             }
                         }
 
