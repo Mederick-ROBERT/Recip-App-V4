@@ -18,7 +18,7 @@
             <div class="header--container--nav">
                 <nav class="header--nav">
                     <ul>
-                        <li><nuxt-link to="/" :class="{ 'active': route.path === '/' }">Acceuil</nuxt-link></li>
+                        <li><nuxt-link to="/" :class="{ 'active': route.path === '/' }">Accueil</nuxt-link></li>
                         <li><nuxt-link to="/rechercher" :class="{ 'active': route.path === '/rechercher' }">Rechercher Un Plat</nuxt-link></li>
                         <li><nuxt-link to="/confectioner" :class="{ 'active': route.path === '/confectioner' }">Confectioner Un Plat</nuxt-link></li>
                         <li><nuxt-link to="/menus" :class="{ 'active': route.path === '/menus' }">Créer Vos Menus</nuxt-link></li>
