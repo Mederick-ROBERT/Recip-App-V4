@@ -69,6 +69,7 @@ export default {
                 animation: slideIn 1.1s ease-in-out;
                 position: relative;
                 z-index: 9;
+                max-width: none;
             }
         }
     }

@@ -24,6 +24,7 @@ Route::controller(\App\Http\Controllers\PlatController::class)
         Route::get('/plat', 'index');
         Route::get('/plat/{slug}', 'show');
         Route::post('/filter', 'filter');
+        Route::post('/create', 'create');
 
 });
 

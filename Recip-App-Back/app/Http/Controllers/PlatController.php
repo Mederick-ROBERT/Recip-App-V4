@@ -9,6 +9,7 @@ use App\Models\Plat;
 use App\Models\Unite;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PlatController extends Controller
 {
@@ -33,9 +34,59 @@ class PlatController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
+        if ($request->hasFile('picture')) {
+            $image = $request->file('picture');
+
+            $imageName = uniqid('image_') . '.' . $image->getClientOriginalExtension();
+
+            $image->move(public_path('assets/picture'), $imageName);
+
+        } else {
+            $imageName = 'default.jpg';
+        }
+
+        $newPlat = Plat::create([
+            'type_id' => $request->type,
+            'importance_id' => $request->importance,
+            'name' => $request->name,
+            'slug' => Str::slug($request->name . '_|_' . Str::random(20), '-', 'fr'),
+            'preparation_time' => Carbon::parse($request->preparation_time)->isoFormat('HH:mm:ss'),
+            'cooking_time' => Carbon::parse($request->cooking_time)->isoFormat('HH:mm:ss'),
+            'person_number' => $request->person,
+            'picture_url' => 'http://localhost:8000/assets/picture/' . $imageName,
+        ]);
+
+        // ingredients
+
+        $ingredients = explode(',', $request->ingredients);
+
+        foreach ($ingredients as $item) {
+
+            $data = explode('-', $item);
+
+            IngredientOfPlat::create([
+                'plat_id' => $newPlat->id,
+                'ingredient_id' => $data[0],
+                'quantity' => $data[1]
+            ]);
+        }
+
+        // etapes
+
+        $etapes = explode(',', $request->etapes);
+
+        foreach ($etapes as $key => $item) {
+            Etape::create([
+                'plat_id' => $newPlat->id,
+                'order' => $key + 1,
+                'content' => $item
+            ]);
+        }
+
+        return response()->json($newPlat, 200);
     }
 
     /**

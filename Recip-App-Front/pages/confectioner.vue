@@ -1,6 +1,7 @@
 <script setup>
 import Land from '@/assets/SVG/land.svg';
 import { useIngredientStore } from '~/store/ingredient';
+import { createPlatStore } from '~/store/plat';
 
 
     // Person
@@ -29,6 +30,9 @@ import { useIngredientStore } from '~/store/ingredient';
 
     const final2 = ref(heure2.value + ':' + minute2.value)
 
+
+    // recherche d'ingredient
+
     const ingredients = useIngredientStore()
     const allIngredients = await ingredients.getIngredients()
     console.log(allIngredients)
@@ -47,6 +51,9 @@ import { useIngredientStore } from '~/store/ingredient';
         return filteredIngredients;
     });
 
+
+    // ajout d'ingredient
+
     function addIngredient(ingredient) {
         const id = ingredient.id;
         const name = ingredient.name;
@@ -55,7 +62,8 @@ import { useIngredientStore } from '~/store/ingredient';
         const ingredientsContainer = document.querySelector('.ingredients--container--all')
         const ingredients = document.createElement('div')
         ingredients.classList.add('ingredient--once')
-        ingredients.innerHTML = '<span>' + name + '</span><input type="number" name="ingredient[]" /><span>' + unity + '</span>'
+        ingredients.setAttribute('data-target', id)
+        ingredients.innerHTML = '<span>' + name + '</span><input type="number" name="ingredient[]" class="counter" /><span>' + unity + '</span>'
         
         ingredientsContainer.appendChild(ingredients)
 
@@ -64,13 +72,38 @@ import { useIngredientStore } from '~/store/ingredient';
         
     }
 
+
+    // preview d'image
+
+    function previewImage() {
+        const input = document.querySelector('input--picture');
+        const preview = document.querySelector('previewImage');
+        console.log(input)
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    // formulaire
+    const createPlat = createPlatStore();
+
+    const toast = useToast();
+
     onMounted(() => {
         // formulaire ----------------------------
 
         const formMenu = document.querySelector('.add--form button')
 
-        formMenu.addEventListener('click', function() {
+        formMenu.addEventListener('click', async function() {
 
+            const formData = new FormData();
             const name = document.querySelector('#name').value
             const person = document.querySelector('input[name="person"]').value
             const type = document.querySelector('input[name="type"]').value
@@ -82,7 +115,23 @@ import { useIngredientStore } from '~/store/ingredient';
             etapesElements.forEach((etapesElement) => {
                 etapes.push(etapesElement.value);
             });
-            console.log(etapes)
+            
+            const ingredientsElements = document.querySelectorAll('input[name="ingredient[]"]');
+            const ingredients = [];
+            ingredientsElements.forEach((ingredientsElement) => {
+                const dataTarget = ingredientsElement.parentElement.getAttribute('data-target');
+                ingredients.push(dataTarget + '-' + ingredientsElement.value);
+            });
+
+            formData.append('name', name);
+            formData.append('person', person);
+            formData.append('type', type);
+            formData.append('preparation_time', final1.value);
+            formData.append('cooking_time', final2.value);
+            formData.append('importance', importance);
+            formData.append('picture', picture);
+            formData.append('etapes', etapes);
+            formData.append('ingredients', ingredients);
 
             const data = {
                 name: name,
@@ -92,11 +141,18 @@ import { useIngredientStore } from '~/store/ingredient';
                 type: type,
                 importance: importance,
                 picture: picture,
-                // ingredients: ingredients,
+                ingredients: ingredients,
                 etapes: etapes
             }
 
-            console.log(data)
+            console.log("AVANT =",data)
+
+            const createAction = await createPlat.createPlat(formData);
+
+            console.log("APRES =",createAction)
+
+            // notification
+            toast.add({ title: 'Plat envoyé', timeout: 2000, color: 'orange' })
         })
 
         // etapes ----------------------------
@@ -139,6 +195,24 @@ import { useIngredientStore } from '~/store/ingredient';
         crossClosePopUp.addEventListener('click', function() {
             ingredientPopUp.classList.add('close_pop-up')
         })
+
+
+        // ----------------------------
+
+        const inputPicture = document.querySelector('.input--picture')
+        const preview = document.querySelector('.previewImage')
+        inputPicture.addEventListener('change', function() {
+            if (inputPicture.files && inputPicture.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.add('withImage')
+                }
+                
+                reader.readAsDataURL(inputPicture.files[0]);
+            }
+        })
     })
 
 </script>
@@ -170,11 +244,11 @@ import { useIngredientStore } from '~/store/ingredient';
                     <div class="preparation_time--timer">
                         <input type="hidden" name="preparation_time" :value="final1">
                         <div class="preparation_time--timer--container">
-                            <input class="counter" type="text" id="heure" v-model="heure1" autocomplete="off" v-on:change="final1 = heure1 + ':' + minute1">
+                            <input class="counter" type="number" id="heure" v-model="heure1" autocomplete="off" v-on:change="final1 = heure1 + ':' + minute1">
                             <p>heure(s)</p>
                         </div>
                         <div class="preparation_time--timer--container">
-                            <input class="counter" type="text" id="minute" v-model="minute1" autocomplete="off" v-on:change="final1 = heure1 + ':' + minute1">
+                            <input class="counter" type="number" id="minute" v-model="minute1" autocomplete="off" v-on:change="final1 = heure1 + ':' + minute1">
                             <p>minute(s)</p>
                         </div>
                     </div>
@@ -185,11 +259,11 @@ import { useIngredientStore } from '~/store/ingredient';
                     <div class="preparation_time--timer">
                         <input type="hidden" name="cooking_time" :value="final2">
                         <div class="preparation_time--timer--container">
-                            <input class="counter" type="text" id="heure" v-model="heure2" autocomplete="off" v-on:change="final2 = heure2 + ':' + minute2">
+                            <input class="counter" type="number" id="heure" v-model="heure2" autocomplete="off" v-on:change="final2 = heure2 + ':' + minute2">
                             <p>heure(s)</p>
                         </div>
                         <div class="preparation_time--timer--container">
-                            <input class="counter" type="text" id="minute" v-model="minute2" autocomplete="off" v-on:change="final2 = heure2 + ':' + minute2">
+                            <input class="counter" type="number" id="minute" v-model="minute2" autocomplete="off" v-on:change="final2 = heure2 + ':' + minute2">
                             <p>minute(s)</p>
                         </div>
                     </div>
@@ -282,7 +356,7 @@ import { useIngredientStore } from '~/store/ingredient';
                     <div class="input--container">
                         <span class="before--input">
                             <input class="input--picture" type="file" name="picture" id="picture">
-                            <img :src="Land" alt="land for input">
+                            <img :src="Land" alt="land for input" class="previewImage">
                             <p>Ajouter une image</p>
                         </span>
                     </div>
@@ -305,6 +379,7 @@ import { useIngredientStore } from '~/store/ingredient';
                 </div>
             </div>
         </div>
+        <UNotifications />
     </div>
 </template>
 
@@ -329,6 +404,17 @@ import { useIngredientStore } from '~/store/ingredient';
         width: fit-content;
         margin-bottom: 1rem;
         height: fit-content;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 
     & .form--container{
@@ -393,7 +479,7 @@ import { useIngredientStore } from '~/store/ingredient';
                         align-items: center;
 
                         & .plus {
-                            padding: .1rem .3rem;
+                            padding: .13rem .3rem;
                             border: 2px solid v.$trait--color;
                             display: flex;
                             align-items: center;
@@ -410,12 +496,12 @@ import { useIngredientStore } from '~/store/ingredient';
                             justify-content: center;
                             border-left: none;
                             border-right: none;
-                            font-size: 1.3rem;
+                            font-size: 1.1rem;
                             color: v.$primary--color;
                         }
 
                         & .minus {
-                            padding: .1rem .3rem;
+                            padding: .13rem .3rem;
                             border: 2px solid v.$trait--color;
                             display: flex;
                             align-items: center;
@@ -451,6 +537,7 @@ import { useIngredientStore } from '~/store/ingredient';
                                 outline: none;
                             }
                         }
+
                     }
                 }
             }
@@ -552,12 +639,14 @@ import { useIngredientStore } from '~/store/ingredient';
                     border-radius: 10px;
                     padding: .2rem;
                     position: relative;
-                    // overflow: hidden;
+                    overflow: hidden;
 
                     & .input--picture {
                         width: 100%;
                         height: 100%;
                         opacity: 0;
+                        position: relative;
+                        z-index: 2;
                     }
 
                     & img {
@@ -578,6 +667,14 @@ import { useIngredientStore } from '~/store/ingredient';
                         bottom: 5px;
                         width: 100%;
                     }
+                }
+
+                & .withImage {
+                    width: 100% !important;
+                    height: 100% !important;
+                    z-index: 1 !important;
+                    top: 0 !important;
+                    left: 0 !important;
                 }
 
                 

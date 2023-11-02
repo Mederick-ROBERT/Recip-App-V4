@@ -77,3 +77,31 @@ export const useOncePlatStore = defineStore('oncePlat', () => {
         getOncePlat
     }
 })
+
+
+export const createPlatStore = defineStore('createPlat', () => {
+
+    const response = ref(null);
+
+    const createPlat = async (data) => {
+        console.log('DATA',data)
+        const create = await useFetch('http://localhost:8000/api/create', {
+            body: data,
+            method: 'POST',
+            // params: {
+            //     token: localStorage.getItem('token')
+            // }
+            // headers: {
+            //     'Content-Type': 'multipart/form-data',
+            // }
+        })
+        console.log('CREATE',create)
+        return create.data
+    }
+
+    return {
+        response,
+        createPlat
+    }
+
+})

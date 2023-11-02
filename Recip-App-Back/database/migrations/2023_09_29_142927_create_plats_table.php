@@ -27,6 +27,7 @@ return new class extends Migration
             $table->time('cooking_time');
             $table->integer('person_number');
             $table->mediumText('picture_url');
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
     }

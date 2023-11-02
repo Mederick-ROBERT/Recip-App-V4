@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Etape extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+      'plat_id',
+      'order',
+      'content'
+    ];
 }
