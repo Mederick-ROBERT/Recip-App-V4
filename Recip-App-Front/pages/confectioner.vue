@@ -63,7 +63,7 @@ import { createPlatStore } from '~/store/plat';
         const ingredients = document.createElement('div')
         ingredients.classList.add('ingredient--once')
         ingredients.setAttribute('data-target', id)
-        ingredients.innerHTML = '<span>' + name + '</span><input type="number" name="ingredient[]" class="counter" /><span>' + unity + '</span>'
+        ingredients.innerHTML = '<div class="data-one-ingredient"><span class="ingredient--name">' + name + '</span><input type="number" name="ingredient[]" class="counter" /><span class="ingredient--unity">' + unity + '</span></div>'
         
         ingredientsContainer.appendChild(ingredients)
 
@@ -151,7 +151,7 @@ import { createPlatStore } from '~/store/plat';
 
             console.log("APRES =",createAction)
 
-            // notification
+            // notification d'ajout
             toast.add({ title: 'Plat envoyé', timeout: 2000, color: 'orange' })
         })
 
@@ -447,6 +447,40 @@ import { createPlatStore } from '~/store/plat';
 
                     &:focus {
                         outline: none;
+                    }
+                }
+
+                & .data-one-ingredient {
+                    display: flex;
+                    flex-direction: row;
+                    margin: 1rem .5rem;
+
+                     & .ingredient--name {
+                        background-color: white !important;
+                        border: 1px solid v.$trait--color !important;
+                        border-radius: 10px 0 0 10px !important;
+                        padding: .3rem .5rem;
+                    } 
+
+                    & .counter {
+                        border: 1px solid v.$trait--color !important;
+                        border-left: none !important;
+                        border-right: none !important;
+                        width: 50px;
+                        color: v.$primary--color;
+                        text-align: end;
+
+                        &:focus {
+                            outline: none;
+                        }
+                    }
+
+                    & .ingredient--unity {
+                        background-color: white !important;
+                        border: 1px solid v.$trait--color !important;
+                        border-left: none !important;
+                        border-radius: 0 10px 10px 0 !important;
+                        padding: .3rem .5rem;
                     }
                 }
 

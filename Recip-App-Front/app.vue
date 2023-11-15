@@ -12,11 +12,12 @@ useSeoMeta({
 </script>
 
 <template>
+  <NuxtLoadingIndicator color="orange"/>
   <div v-if="loading" class="loading-page">
     <span id="loader" class="loader"></span>
   </div>
   <!-- <ApiLoad v-if="!loading" /> -->
-  <Header v-if="!loading" />
+  <NuxtLayout v-if="!loading" />
   <NuxtPage v-if="!loading" />
 </template>
 

@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@use '../../style/variable.scss' as v;
+@use '../style/variable.scss' as v;
 
 header {
     width: 100%;
@@ -164,3 +164,4 @@ header {
 }
 
 </style>
+
