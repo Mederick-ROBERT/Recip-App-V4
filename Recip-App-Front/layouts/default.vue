@@ -53,6 +53,8 @@ export default {
 header {
     width: 100%;
     height: v.$head--height;
+    animation: slideInFromLeft 1.5s ease-in-out;
+    
 
     .header--container {
         width: 100%;
@@ -160,6 +162,15 @@ header {
                 }
             }
         }
+    }
+}
+
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
     }
 }
 

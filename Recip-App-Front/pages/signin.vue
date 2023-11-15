@@ -6,8 +6,40 @@ definePageMeta({
 })
 
 const store = useDataUser();
-console.log('USER', store.user);
+
+const toast = useToast();
+
 onMounted(() => {
+
+    // password controller
+
+    const caractere = document.querySelector('.caractere');
+    const majuscule = document.querySelector('.majuscule');
+    const chiffre = document.querySelector('.chiffre');
+
+    const password = document.querySelector('#password');
+
+    password.addEventListener('keyup', () => {
+        const passwordValue = password.value;
+
+        if (passwordValue.length >= 8) {
+            caractere.style.color = '#11cc40';
+        } else {
+            caractere.style.color = '#A4A4A4';
+        }
+
+        if (passwordValue.match(/[A-Z]/)) {
+            majuscule.style.color = '#11cc40';
+        } else {
+            majuscule.style.color = '#A4A4A4';
+        }
+
+        if (passwordValue.match(/[0-9]/)) {
+            chiffre.style.color = '#11cc40';
+        } else {
+            chiffre.style.color = '#A4A4A4';
+        }
+    })
 
     // password visibility
 
@@ -29,15 +61,28 @@ onMounted(() => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const data = {
-            'email' : 'crepe.man56@gmail.com',
-            'password' : 'Azerty123'
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        if(!await store.setRegister(data)){
+            console.log('ERROR',store.error);
+            document.querySelectorAll('.error').forEach((error) => {
+                error.remove();
+            })
+
+            for(const error in store.error){
+                let newError = document.createElement('p');
+                newError.innerHTML = store.error[error][0];
+                newError.classList.add('error');
+                container.prepend(newError);
+            }
+        } else {
+            form.reset();
+            toast.add({ title: 'Inscription réussi', timeout: 2000, color: 'orange', icon : "i-heroicons-check-badge", description: 'Vous allez être redirigé vers votre dashboard' })
         }
 
-        await store.setLogin(data);
-    })
 
-    
+    })
 
 })
 </script>
@@ -56,7 +101,7 @@ onMounted(() => {
                             <p>Découvrez des centaines de recettes à préparer en un instant ! Inscrivez-vous dès maintenant pour accéder à une variété de délices culinaires à porté de clic.</p>
                         </div>
                         <div class="bottom-texte">
-                            <p>Pas encore membre ? <nuxt-link to="/signin">Inscrivez-vous</nuxt-link></p>
+                            <p>Déja membre ? <nuxt-link to="/login">Connectez-vous</nuxt-link></p>
                         </div>
                     </div>
                 </div>
@@ -64,11 +109,20 @@ onMounted(() => {
             <div class="right--side">
                 <div class="title">
                     <h2>Bienvenue sur Food'<span style="color: #DD5D2C;">X</span></h2>
-                    <p>Connectez-vous à votre profil</p>
+                    <p>Créer votre profil</p>
                 </div>
                 <div class="formulaire">
                     <form class="sign-in--form">
-                        
+                        <div class="double--input">
+                            <div class="input--class">
+                                <label for="firstname">Votre Nom</label>
+                                <input type="text" name="firstname" id="firstname" autocomplete="none">
+                            </div>
+                            <div class="input--class">
+                                <label for="lastname">Votre Prénom</label>
+                                <input type="text" name="lastname" id="lastname" autocomplete="none">
+                            </div>
+                        </div>
                         <div class="single--input">
                             <div class="input--class">
                                 <label for="email">Votre Adresse Mail</label>
@@ -82,8 +136,13 @@ onMounted(() => {
                                 <span class="eye--close"><Icon name="solar:eye-closed-outline" size="20px" /></span>
                             </div>
                         </div>
+                        <div class="info">
+                            <p class="caractere">* Minimum 8 caractères</p>
+                            <p class="majuscule">* Minimum 1 majuscule</p>
+                            <p class="chiffre">* Minimum 1 chiffre</p>
+                        </div>
                         <div class="button--submit">
-                            <button type="submit">Connexion</button>
+                            <button type="submit">Rejoindre</button>
                         </div>
                     </form>
                 </div>
@@ -212,6 +271,12 @@ onMounted(() => {
             gap: 1rem;
             width: 85%;
 
+            .double--input {
+                display: flex;
+                gap: 3rem;
+                justify-content: space-between;
+            }
+
             .input--class {
                 display: flex;
                 flex-direction: column;
@@ -244,6 +309,11 @@ onMounted(() => {
                 #password {
                     padding-right: 2.5rem;
                 }
+            }
+
+            .info {
+                color: #A4A4A4;
+                font-size: 0.8rem;
             }
 
             .button--submit {
